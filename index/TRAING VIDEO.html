@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Football Mat Foundation Exercise Videos</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0b0f14, #111827);
+      color: #e5e7eb;
+    }
+
+    /* HEADER */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: rgba(17, 24, 39, 0.9);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .header-left {
+      font-size: 13px;
+      font-weight: bold;
+      color: #22d3ee;
+    }
+
+    .header-center {
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      flex: 1;
+      color: #ffffff;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .header-right img {
+      height: 100px;
+      border-radius: 50px;
+      box-shadow: 0 0 10px rgba(34, 211, 238, 0.25);
+    }
+
+    /* BACK TO STORE BUTTON */
+    .back-btn {
+      background: linear-gradient(135deg, #22d3ee, #0284c7);
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-weight: bold;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(34, 211, 238, 0.4);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(34, 211, 238, 0.6);
+    }
+
+    /* BANNER STYLES */
+    .banner {
+      margin: 12px 16px;
+      padding: 15px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #22d3ee, #0f172a);
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .banner img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .banner h1 {
+      margin: 0;
+      font-size: 22px;
+      color: #ffffff;
+    }
+
+    .banner p {
+      margin: 8px 0 0;
+      font-size: 14px;
+      color: #e5e7eb;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 16px;
+    }
+
+    .grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    @keyframes cardEnter {
+      0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* VIDEO CARD */
+    .video-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+      transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, filter 0.4s ease, opacity 0.4s ease;
+      opacity: 1;
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+      justify-content: flex-end;
+      animation: cardEnter 0.6s ease-out backwards;
+    }
+
+    .video-card:nth-child(even) {
+      animation-delay: 0.1s;
+    }
+
+    .video-card:hover:not(.dimmed) {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 15px 35px rgba(34, 211, 238, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .video-card.dimmed {
+      opacity: 0.25;
+      transform: scale(0.98);
+      filter: blur(0.3px);
+    }
+
+    .video-card.active {
+      opacity: 1 !important;
+      transform: scale(1.03);
+      box-shadow: 0 0 25px rgba(34, 211, 238, 0.25);
+      border: 1px solid rgba(34, 211, 238, 0.3);
+    }
+
+    .video-title {
+      padding: 15px 20px;
+      font-size: 24px;
+      font-weight: 900;
+      color: #ffffff;
+      background: transparent;
+      flex-grow: 1;
+      text-align: left;
+    }
+
+    video {
+      display: block;
+      background: black;
+    }
+
+    .video-card video {
+      width: 45%;
+      max-width: 250px;
+      object-fit: cover;
+    }
+
+    /* FULL SCREEN PLAYER */
+    .player-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .player-overlay video {
+      width: 95%;
+      max-width: 900px;
+      border-radius: 12px;
+      box-shadow: 0 0 30px rgba(34, 211, 238, 0.3);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* WhatsApp Floating Widget */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: auto;
+      padding: 0 20px;
+      border-radius: 30px;
+      font-size: 16px;
+      font-family: Arial, sans-serif;
+      background-color: #25D366;
+      color: white;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      cursor: default;
+      transition: transform 0.3s ease;
+      text-decoration: none;
+    }
+    .whatsapp-float:hover {
+        transform: scale(1.05);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <div class="header-left"><a href="Untitled design (2).png" style="text-decoration: none; color: #22d3ee;">.RABBANI.</a></div>
+    <nav style="display: flex; gap: 20px; font-weight: bold; font-size: 14px;">
+        <a href="home.html" style="text-decoration: none; color: white;">HOME</a>
+        <a href="store.html" style="text-decoration: none; color: white;">SHOP</a>
+        <a href="TRAING VIDEO.html" style="text-decoration: none; color: #22d3ee;">TRAINING</a>
+        <a href="about.html" style="text-decoration: none; color: white;">ABOUT US</a>
+    </nav>
+    <div class="header-right">
+      <a href="store.html" class="back-btn">
+        <i class="fas fa-shopping-bag"></i> SHOP
+      </a>
+      <img src="Untitled design (2).png" alt="Logo" />
+    </div>
+  </div>
+
+  <div class="banner">
+    <img src="Gemini_Generated_Image_rbq6xrbq6xrbq6xr (1).png" alt="Training Preview" />
+    <h1>Football Training Program</h1>
+    <p>Improve your skills with foundation & advanced exercises</p>
+  </div>
+
+  <div class="container">
+    <div class="grid">
+      <div class="video-card" onclick="openPlayer(this)">
+        <div class="video-title">Foundation Exercise 1</div>
+        <video src="01 Football mat foundation exercises1.1 - 2F22E Store (144p, h264).mp4"></video>
+      </div>
+
+      <div class="video-card" onclick="openPlayer(this)">
+        <div class="video-title">Foundation Exercise 2</div>
+        <video src="02 Football mat foundation exercises1.2 - 2F22E Store (144p, h264).mp4"></video>
+      </div>
+
+      <div class="video-card" onclick="openPlayer(this)">
+        <div class="video-title">Foundation Exercise 3</div>
+        <video src="03 Football mat foundation exercises1.3 - 2F22E Store (144p, h264).mp4"></video>
+      </div>
+
+      <div class="video-card" onclick="openPlayer(this)">
+        <div class="video-title">Foundation Exercise 4</div>
+        <video src="04 Football mat foundation exercises1.4 - 2F22E Store (144p, h264).mp4"></video>
+      </div>
+
+      <div class="video-card" onclick="openPlayer(this)">
+        <div class="video-title">Foundation Exercise 5</div>
+        <video src="05 Football mat Advanced Practice 2.1 - 2F22E Store (144p, h264).mp4"></video>
+      </div>
+
+      <div class="video-card" onclick="openPlayer(this)">
+        <div class="video-title">Foundation Exercise 6</div>
+        <video src="06 Football mat Advanced Practice 2.2 - 2F22E Store (144p, h264).mp4"></video>
+      </div>
+
+      <div class="video-card" onclick="openPlayer(this)">
+        <div class="video-title">Foundation Exercise 7</div>
+        <video src="07 Football mat Advanced Practice 2.3 - 2F22E Store (144p, h264).mp4"></video>
+      </div>
+
+      <div class="video-card" onclick="openPlayer(this)">
+        <div class="video-title">Foundation Exercise 8</div>
+        <video src="08 Football mat Advanced Practice 2.4 - 2F22E Store (144p, h264).mp4"></video>
+      </div>
+
+      <div class="video-card" onclick="openPlayer(this)">
+        <div class="video-title">Foundation Exercise 9</div>
+        <video src="09 Football mat Advanced skill practice 3.1 - 2F22E Store (144p, h264).mp4"></video>
+      </div>
+
+      <div class="video-card" onclick="openPlayer(this)">
+        <div class="video-title">Foundation Exercise 10</div>
+        <video src="10 Football mat Advanced skill practice 3.2 - 2F22E Store (144p, h264).mp4"></video>
+      </div>
+
+      <div class="video-card" onclick="openPlayer(this)">
+        <div class="video-title">Foundation Exercise 11</div>
+        <video src="11 Football mat Advanced skill practice 3.3 - 2F22E Store (144p, h264).mp4"></video>
+      </div>
+
+      <div class="video-card" onclick="openPlayer(this)">
+        <div class="video-title">Foundation Exercise 12</div>
+        <video src="12 Football mat Advanced skill practice 3.4 - 2F22E Store (144p, h264).mp4"></video>
+      </div>
+    </div>
+  </div>
+
+  <div class="player-overlay" id="player">
+    <button class="close-btn" onclick="closePlayer()">Close</button>
+    <video id="mainVideo" controls autoplay></video>
+  </div>
+
+  <script>
+    const player = document.getElementById('player');
+    const mainVideo = document.getElementById('mainVideo');
+    const cards = document.querySelectorAll('.video-card');
+
+    function openPlayer(card) {
+      const video = card.querySelector('video');
+
+      cards.forEach(c => {
+        c.classList.remove('active');
+        c.classList.add('dimmed');
+      });
+
+      card.classList.remove('dimmed');
+      card.classList.add('active');
+
+      mainVideo.src = video.src;
+      player.style.display = 'flex';
+      mainVideo.play();
+    }
+
+    function closePlayer() {
+      mainVideo.pause();
+      player.style.display = 'none';
+      mainVideo.src = '';
+
+      cards.forEach(c => {
+        c.classList.remove('dimmed');
+        c.classList.remove('active');
+      });
+    }
+  </script>
+
+<!-- Permanent WhatsApp Button -->
+    <a href="https://wa.me/923477128889" class="whatsapp-float" target="_blank" aria-label="Chat with us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+  
+    
+  </div>
+
+</body>
+
+</html>
